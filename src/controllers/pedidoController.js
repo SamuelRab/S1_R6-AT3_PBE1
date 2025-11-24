@@ -82,7 +82,7 @@ const pedidoController = {
             await connection.commit(); 
         
             res.status(201).json({
-                message: "Pedido e Entrega registrados e calculados com sucesso (Transação OK)!",
+                message: "Pedido e Entrega registrados e calculados com sucesso !!!!!!",
                 ID_pedido: ID_pedido,
                 valor_final: valor_final,
                 detalhes_calculo: {
