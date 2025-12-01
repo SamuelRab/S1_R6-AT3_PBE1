@@ -116,11 +116,6 @@ const pedidoController = {
                 message: "Falha na transação do Pedido/Entrega. O registro foi desfeito.",
                 errorMessage: error.message,
             });
-        } finally {
-             // Liberação da Conexão
-             if (connection) {
-                connection.release(); // Devolve a conexão ao pool
-             }
         }
     },
 };
