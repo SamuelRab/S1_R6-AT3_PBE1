@@ -5,7 +5,7 @@ const pool = require("../config/db");
 /**
  * @typedef {Object} PedidoInput
  * @property {number} ID_cliente ID do cliente.
- * @property {string} data_do_pedido Data da realização do pedido (ex: 'YYYY-MM-DD').
+ * @property {string} data_do_pedido Data da realização do pedido.
  * @property {('urgente'|'normal')} tipo_de_entrega Tipo de entrega para cálculo.
  * @property {number} distancia Distância em km para o cálculo.
  * @property {number} peso_de_carga Peso da carga em kg para o cálculo.

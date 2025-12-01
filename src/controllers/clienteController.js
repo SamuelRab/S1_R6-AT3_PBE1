@@ -3,7 +3,7 @@ const { clienteModel } = require("../models/clienteModel");
 /**
  * @typedef {Object} ClienteData
  * @property {string} nome_completo Nome completo do cliente.
- * @property {string} cpf CPF do cliente (somente números).
+ * @property {string} cpf CPF do cliente.
  * @property {string} [telefone] Telefone de contato.
  * @property {string} [email] Email de contato.
  * @property {string} endereco Endereço completo.
@@ -48,7 +48,7 @@ const clienteController = {
      * Rota: GET /clientes/:id_cliente
      * @async
      * @function buscarclientePorID
-     * @param {Request} req Requisição contendo `id_cliente` nos parâmetros.
+     * @param {Request} req Requisição contendo nos parâmetros.
      * @param {Response} res Resposta HTTP.
      * @returns {Promise<Array<<Object>} Envia uma resposta JSON com o cliente ou erro
      */
@@ -100,7 +100,7 @@ const clienteController = {
             // Verifica se o CPF já existe
             const resultadoId = await clienteModel.selecionarPorCPF(cpf); 
             if (resultadoId.length === 1) {
-                return res.status(409).json({ message: "Esse CPF ja existe. Tente Outro" }); // 409 Conflict
+                return res.status(409).json({ message: "Esse CPF ja existe. Tente Outro" });
             }
 
             // Insere o cliente
@@ -113,7 +113,7 @@ const clienteController = {
                     result: resultado,
                 });
             } else {
-                throw new Error("Ocorrou um erro ao inclur o registro");
+                throw new Error("Ocorreu um erro ao inclur o registro");
             }
         } catch (error) {
             console.error(error);
