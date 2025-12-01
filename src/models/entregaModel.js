@@ -6,7 +6,7 @@ const entregaModel = {
     /**
      * Gerencia a Transação Completa de um Pedido.
      * Abre conexão e inicia transação.
-     * Insere o pedido (cabeçalho).
+     * Insere o pedido.
      * Insere a entrega com os valores calculados.
      * Faz Commit se tudo der certo ou Rollback se der erro.
      * * @async
