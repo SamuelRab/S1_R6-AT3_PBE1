@@ -15,12 +15,12 @@ collection:
       sortKey: -1763983729992
       description: ""
     children:
-      - url: http://localhost:8081/clientes/1
-        name: New Request
+      - url: http://localhost:8081/clientes/5
+        name: Deletar cliente
         meta:
           id: req_11ed6e96dbc9492dbd64d9c12cc0c7cb
           created: 1763397727645
-          modified: 1763990835200
+          modified: 1764595454668
           isPrivate: false
           description: ""
           sortKey: -1763983733339
@@ -37,11 +37,11 @@ collection:
             store: true
           rebuildPath: true
       - url: http://localhost:8081/clientes/3
-        name: New Request
+        name: Atualizar cliente
         meta:
           id: req_4df47ab511d040669d62f9c300c9b2af
           created: 1763983700027
-          modified: 1763999803211
+          modified: 1764001987259
           isPrivate: false
           description: ""
           sortKey: -1763983733439
@@ -70,11 +70,11 @@ collection:
             store: true
           rebuildPath: true
       - url: http://localhost:8081/clientes
-        name: New Request
+        name: Criar cliente
         meta:
           id: req_d260a1ee3d214f489512795375e8fa85
           created: 1763983702106
-          modified: 1764000034612
+          modified: 1764002009127
           isPrivate: false
           description: ""
           sortKey: -1763983733239
@@ -103,11 +103,11 @@ collection:
             store: true
           rebuildPath: true
       - url: http://localhost:8081/clientes
-        name: New Request
+        name: Buscar clientes
         meta:
           id: req_613423a6e57a41ad8dc1d6b89e8a9ec4
           created: 1763983703809
-          modified: 1763990485956
+          modified: 1764002018893
           isPrivate: false
           description: ""
           sortKey: -1763983733139
@@ -124,11 +124,11 @@ collection:
             store: true
           rebuildPath: true
       - url: http://localhost:8081/clientes/1
-        name: New Request
+        name: Buscar por ID
         meta:
           id: req_ae9fc72c5a27450888dbc8458396fc49
           created: 1763983705620
-          modified: 1763990502723
+          modified: 1764002030391
           isPrivate: false
           description: ""
           sortKey: -1763983733039
@@ -153,11 +153,11 @@ collection:
       description: ""
     children:
       - url: http://localhost:8081/pedidos
-        name: New Request
+        name: Pedido e entrega
         meta:
           id: req_f1e8ac2d72f14c259d5fd2e874102c1b
           created: 1763984008387
-          modified: 1763997933718
+          modified: 1764595773873
           isPrivate: false
           description: ""
           sortKey: -1763984013631
@@ -166,13 +166,13 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"ID_cliente": 2, 
-                "data_do_pedido": "2025-10-11",
+            	"ID_cliente": 5, 
+                "data_do_pedido": "2025-09-12",
                 "tipo_de_entrega": "normal", 
                 "distancia": 20,           
-                "peso_de_carga": 40,        
+                "peso_de_carga": 100,        
                 "valor_da_base_por_km": 15.00, 
-                "valor_da_base_por_kg": 25.00
+                "valor_da_base_por_kg": 30.00
             }
         headers:
           - name: Content-Type

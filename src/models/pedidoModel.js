@@ -33,7 +33,7 @@ const pedidoModel = {
     inserirPedido: async (pIdCliente, pDataPedido, pTipoEntrega, pDistancia, pPesoCarga, pBaseKm, pBaseKg, pConnection) => {
         // Query SQL para inserção de um novo pedido
         const sql = `
-            INSERT INTO Pedido (ID_cliente, data_do_pedido, tipo_de_entrega, distancia, peso_de_carga, valor_da_base_por_km, valor_da_base_por_kg) 
+            INSERT INTO Pedidos (ID_cliente, data_do_pedido, tipo_de_entrega, distancia, peso_de_carga, valor_da_base_por_km, valor_da_base_por_kg) 
             VALUES (?, ?, ?, ?, ?, ?, ?);
         `;
         // Array de valores

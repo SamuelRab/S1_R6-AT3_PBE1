@@ -1,31 +1,71 @@
 const pool = require("../config/db");
+const { pedidoModel } = require("../models/pedidoModel");
 
 const entregaModel = {
-    
-    /**
-     * Insere um novo registro de entrega na tabela Entregas.
-     * * @async
-     * @function inserirEntrega
-     * @param {number} pIdPedido ID do pedido ao qual esta entrega se refere.
-     * @param {number} pValDistancia Valor monetário calculado com base na distância.
-     * @param {number} pValPeso Valor monetário calculado com base no peso da carga.
-     * @param {number} pAcrescimo Valor total de acréscimos aplicados ao frete.
-     * @param {number} pDesconto Valor total de descontos aplicados ao frete.
-     * @param {number} pTaxaExtra Valor de taxas extras.
-     * @param {number} pValorFinal Valor final calculado do frete.
-     * @param {string} pStatus Status atual da entrega.
-     * @returns {Promise<Object>} Objeto contendo o ID inserido e linhas afetadas.
-     */
 
-    inserirEntrega: async (pIdPedido, pValDistancia, pValPeso, pAcrescimo, pDesconto, pTaxaExtra, pValorFinal, pStatus, pConnection) => {
-        // Query SQL para inserção na tabela Entrega
-        const sql = `
-            INSERT INTO Entrega (ID_pedido, valor_da_distancia, valor_do_peso, acrescimo, desconto, taxa_extra, valor_final, status_entrega)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-        `;
-        // Array de valores
-        const values = [pIdPedido, pValDistancia, pValPeso, pAcrescimo, pDesconto, pTaxaExtra, pValorFinal, pStatus];
-        
+    /**
+     * Gerencia a Transação Completa de um Pedido.
+     * Abre conexão e inicia transação.
+     * Insere o pedido (cabeçalho).
+     * Insere a entrega com os valores calculados.
+     * Faz Commit se tudo der certo ou Rollback se der erro.
+     * * @async
+     * @param {Object} dados - Dados brutos recebidos da requisição.
+     * @param {Object} calculos - Objeto com os valores finais já calculados pelo controller.
+     * @param {number} calculos.distancia - Valor monetário da distância.
+     * @param {number} calculos.peso - Valor monetário do peso.
+     * @param {number} calculos.acrescimo - Valor do acréscimo.
+     * @param {number} calculos.desconto - Valor do desconto.
+     * @param {number} calculos.taxa - Valor da taxa extra.
+     * @param {number} calculos.final - Valor total final a ser cobrado.
+     * @returns {Promise<object>} Retorna o ID do pedido criado e o valor final.
+     * @throws {Error} Lança erro caso a transação falhe, forçando o tratamento no controller.
+     */
+    salvarPedidoCompleto: async (dados, calculos) => {
+        let connection;
+        try {
+            // Inicia a transação
+            connection = await pool.getConnection(); 
+            await connection.beginTransaction();
+
+            // Salva o Pedido 
+            const resPedido = await pedidoModel.inserirPedido(
+                dados.ID_cliente, dados.data_do_pedido, dados.tipo_de_entrega, 
+                dados.distancia, dados.peso_de_carga, 
+                dados.valor_da_base_por_km, dados.valor_da_base_por_kg, 
+                connection 
+            );
+            const idPedido = resPedido.insertId;
+
+            // Salva a Entrega 
+            const sqlEntrega = `
+                INSERT INTO Entregas (ID_pedido, valor_da_distancia, valor_do_peso, acrescimo, desconto, taxa_extra, valor_final, status_entrega)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+            
+            const valuesEntrega = [
+                idPedido, calculos.distancia, calculos.peso, 
+                calculos.acrescimo, calculos.desconto, calculos.taxa, 
+                calculos.final, 'calculado'
+            ];
+
+            await connection.query(sqlEntrega, valuesEntrega);
+
+            // Confirma as alterações no banco
+            await connection.commit();
+            
+            return { idPedido, valorFinal: calculos.final };
+
+        } catch (error) {
+            // Em caso de erro, desfaz tudo
+            if (connection) {
+                await connection.rollback();
+                console.warn('Transação desfeita (ROLLBACK executado).');
+            }
+            throw error;
+        } finally {
+            // Libera a conexão para o pool
+            if (connection) connection.release(); 
+        }
     }
 };
 
