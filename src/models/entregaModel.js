@@ -26,16 +26,6 @@ const entregaModel = {
         // Array de valores
         const values = [pIdPedido, pValDistancia, pValPeso, pAcrescimo, pDesconto, pTaxaExtra, pValorFinal, pStatus];
         
-        // Verifica se uma conexão de transação foi fornecida
-        if (pConnection) {
-            // Executa a query usando a conexão da transação 
-            const [rows] = await pConnection.query(sql, values);
-            return rows;
-        } else {
-            // Executa a query usando o pool padrão 
-            const [rows] = await pool.query(sql, values);
-            return rows;
-        }
     }
 };
 
