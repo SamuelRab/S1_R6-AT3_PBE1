@@ -129,9 +129,9 @@ const clienteController = {
      * Rota: PUT /clientes/:id_cliente
      * @async
      * @function atualizarCliente
-     * @param {Request} req Requisição contendo `id_cliente` no parâmetro e dados de atualização (`ClienteData`) no corpo.
+     * @param {Request} req Requisição contendo no parâmetro e dados de atualização no corpo.
      * @param {Response} res Resposta HTTP.
-     * @returns {Promise<void>} Envia resposta JSON de sucesso (200) ou erro (400/404/500).
+     * @returns {Promise<void>} Envia resposta JSON de sucesso ou erro.
      */
     atualizarCliente: async (req, res) => {
         try {
