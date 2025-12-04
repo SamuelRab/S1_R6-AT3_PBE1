@@ -4,8 +4,8 @@ const pool = require("../config/db");
  * @typedef {Object} Pedido
  * @property {number} ID_pedido O ID único do pedido.
  * @property {number} ID_cliente ID do cliente que fez o pedido.
- * @property {string} data_do_pedido Data de realização do pedido (formato 'YYYY-MM-DD').
- * @property {string} tipo_de_entrega Categoria da entrega (ex: 'urgente', 'normal').
+ * @property {string} data_do_pedido Data de realização do pedido.
+ * @property {string} tipo_de_entrega Categoria da entrega.
  * @property {number} distancia Distância em quilômetros.
  * @property {number} peso_de_carga Peso da carga em quilogramas.
  * @property {number} valor_da_base_por_km Custo base por quilômetro usado no cálculo.
@@ -15,8 +15,8 @@ const pool = require("../config/db");
 const pedidoModel = {
     
     /**
-     * Insere um novo registro de pedido na tabela 'Pedido'.
-     * Esta função é configurada para operar dentro de uma **transação** se uma conexão
+     * Insere um novo registro de pedido na tabela 'Pedidos'.
+     * Esta função é configurada para operar dentro de uma transação se uma conexão
      * for fornecida, garantindo que a inserção seja atômica com outras operações.
      * @async
      * @function inserirPedido

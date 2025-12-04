@@ -8,8 +8,8 @@ const pedidoController = {
      * e solicita ao Model a gravação segura no banco de dados.
      * * Rota associada: POST /pedidos
      * * @async
-     * @param {import('express').Request} req - Objeto de requisição do Express.
-     * @param {import('express').Response} res - Objeto de resposta do Express.
+     * @param {import('express').Request} req  Objeto de requisição do Express.
+     * @param {import('express').Response} res Objeto de resposta do Express.
      * @returns {Promise<Object>} Retorna JSON com sucesso ou erro.
      */
     incluirPedidoComCalculo: async (req, res) => {
