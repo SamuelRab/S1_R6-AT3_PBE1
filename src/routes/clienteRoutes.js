@@ -10,3 +10,4 @@ clienteRoutes.put('/clientes/:id_cliente', clienteController.atualizarCliente);
 clienteRoutes.delete('/clientes/:id_cliente', clienteController.excluirCliente);
 
 module.exports = {clienteRoutes};
+
