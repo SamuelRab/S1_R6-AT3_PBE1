@@ -30,9 +30,9 @@ const entregaModel = {
 
             // Salva o Pedido 
             const resPedido = await pedidoModel.inserirPedido(
-                dados.ID_cliente, dados.data_do_pedido, dados.tipo_de_entrega, 
-                dados.distancia, dados.peso_de_carga, 
-                dados.valor_da_base_por_km, dados.valor_da_base_por_kg, 
+                ID_cliente, data_do_pedido, tipo_de_entrega, 
+                distancia, peso_de_carga, 
+                valor_da_base_por_km, valor_da_base_por_kg, 
                 connection 
             );
             const idPedido = resPedido.insertId;
