@@ -15,12 +15,12 @@ collection:
       sortKey: -1763983729992
       description: ""
     children:
-      - url: http://localhost:8081/clientes/1
-        name: New Request
+      - url: http://localhost:8081/clientes/8
+        name: Deletar cliente
         meta:
           id: req_11ed6e96dbc9492dbd64d9c12cc0c7cb
           created: 1763397727645
-          modified: 1763990835200
+          modified: 1765193663710
           isPrivate: false
           description: ""
           sortKey: -1763983733339
@@ -36,12 +36,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: http://localhost:8081/clientes/3
-        name: New Request
+      - url: http://localhost:8081/clientes/5
+        name: Atualizar cliente
         meta:
           id: req_4df47ab511d040669d62f9c300c9b2af
           created: 1763983700027
-          modified: 1763999803211
+          modified: 1765195479876
           isPrivate: false
           description: ""
           sortKey: -1763983733439
@@ -50,8 +50,8 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"nome_completo": "Samuel Diniz",
-               "cpf": "12345670173",
+            	"nome_completo": "Ana Banana",
+               "cpf": "12345676783",
                "telefone": "11910364321",
                "email": "samuelcarolina@outlook.com",
                "endereco": "matão"
@@ -70,11 +70,11 @@ collection:
             store: true
           rebuildPath: true
       - url: http://localhost:8081/clientes
-        name: New Request
+        name: Criar cliente
         meta:
           id: req_d260a1ee3d214f489512795375e8fa85
           created: 1763983702106
-          modified: 1764000034612
+          modified: 1765193514543
           isPrivate: false
           description: ""
           sortKey: -1763983733239
@@ -83,11 +83,11 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"nome_completo": "Ana Rato",
-               "cpf": "48836890808",
-               "telefone": "19981427606",
-               "email": "panizinho10@outlook.com",
-               "endereco": "Rua Orlando Viana"
+            	"nome_completo": "Raphael Monte",
+               "cpf": "48810360800",
+               "telefone": "199816239606",
+               "email": "montes50@outlook.com",
+               "endereco": "Rua Ouvires da Cunha"
             }
         headers:
           - name: Content-Type
@@ -103,11 +103,11 @@ collection:
             store: true
           rebuildPath: true
       - url: http://localhost:8081/clientes
-        name: New Request
+        name: Buscar clientes
         meta:
           id: req_613423a6e57a41ad8dc1d6b89e8a9ec4
           created: 1763983703809
-          modified: 1763990485956
+          modified: 1764002018893
           isPrivate: false
           description: ""
           sortKey: -1763983733139
@@ -124,11 +124,11 @@ collection:
             store: true
           rebuildPath: true
       - url: http://localhost:8081/clientes/1
-        name: New Request
+        name: Buscar por ID
         meta:
           id: req_ae9fc72c5a27450888dbc8458396fc49
           created: 1763983705620
-          modified: 1763990502723
+          modified: 1764002030391
           isPrivate: false
           description: ""
           sortKey: -1763983733039
@@ -153,11 +153,11 @@ collection:
       description: ""
     children:
       - url: http://localhost:8081/pedidos
-        name: New Request
+        name: Pedido e entrega
         meta:
           id: req_f1e8ac2d72f14c259d5fd2e874102c1b
           created: 1763984008387
-          modified: 1763997933718
+          modified: 1765201890427
           isPrivate: false
           description: ""
           sortKey: -1763984013631
@@ -166,13 +166,115 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"ID_cliente": 2, 
-                "data_do_pedido": "2025-10-11",
-                "tipo_de_entrega": "normal", 
-                "distancia": 20,           
-                "peso_de_carga": 40,        
-                "valor_da_base_por_km": 15.00, 
-                "valor_da_base_por_kg": 25.00
+            		"ID_cliente": 5, 
+                "data_do_pedido": "2025-12-12",
+                "tipo_de_entrega": "urgente", 
+                "distancia": 90,           
+                "peso_de_carga": 70,        
+                "valor_da_base_por_km": 50.00, 
+                "valor_da_base_por_kg": 20.00
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.1.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8081/pedidos/18
+        name: Selecionar Por ID
+        meta:
+          id: req_c85dca7630304d15b5be4e88daa744ba
+          created: 1765191281297
+          modified: 1765192668075
+          isPrivate: false
+          description: ""
+          sortKey: -1763984013731
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.1.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8081/pedidos
+        name: Selecionar todos os pedidos
+        meta:
+          id: req_40ec849a296c4f5fb0fdbcfead8df242
+          created: 1765194141141
+          modified: 1765194173799
+          isPrivate: false
+          description: ""
+          sortKey: -1763984013831
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.1.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8081/pedidos/7
+        name: Deletar pedido
+        meta:
+          id: req_6c6c76542c29401083d93cc5d3f23995
+          created: 1765207105152
+          modified: 1765207891686
+          isPrivate: false
+          description: ""
+          sortKey: -1763984013931
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.1.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:8081/pedidos/7
+        name: Atualizar pedido
+        meta:
+          id: req_661197544c834588b73c0184dc125c72
+          created: 1765207866804
+          modified: 1765209331387
+          isPrivate: false
+          description: ""
+          sortKey: -1763984014031
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "tipo_de_entrega": "normal",
+                "distancia": 75,
+                "valor_da_base_por_km": 2.50
             }
         headers:
           - name: Content-Type
