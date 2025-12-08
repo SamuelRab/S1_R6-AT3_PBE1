@@ -2,7 +2,7 @@
 
 const functions = {
   calculoEntrega: async (dados) => {
-    // Cálculos para as entregas
+   
     const vDistancia = dados.distancia * dados.valor_da_base_por_km;
     const vPeso = dados.peso_de_carga * dados.valor_da_base_por_kg;
     let base = vDistancia + vPeso;
@@ -11,25 +11,25 @@ const functions = {
     let desconto = 0;
     let taxa = 0;
 
-    // Tipo de urgência
+    
     if (dados.tipo_de_entrega.toLowerCase() === "urgente") {
       acrescimo = base * 0.2;
     }
 
-    //  Desconto para valores altos
+    
     let parcial = base + acrescimo;
     if (parcial > 500.0) {
       desconto = parcial * 0.1;
     }
 
-    //  Taxa extra por peso
+    
     if (dados.peso_de_carga > 50) {
       taxa = 15.0;
     }
 
     const final = parseFloat((parcial - desconto + taxa).toFixed(2));
 
-    // Organiza os resultados para enviar ao Model
+    
     const calculos = {
       distancia: vDistancia,
       peso: vPeso,

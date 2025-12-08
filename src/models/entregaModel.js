@@ -25,10 +25,7 @@ const entregaModel = {
     const connection = await pool.getConnection();
     await connection.beginTransaction();
     try {
-    //   const { dados } = dadosPI;
-     
    
-      // Salva o Pedido
       const resPedido = await pedidoModel.inserirPedido(
         dados.ID_cliente,
         dados.data_do_pedido,
@@ -40,19 +37,10 @@ const entregaModel = {
         connection
       );
 
-    //   const values = [
-    //     pIdCliente,
-    //     pDataPedido,
-    //     pTipoEntrega,
-    //     pDistancia,
-    //     pPesoCarga,
-    //     pBaseKm,
-    //     pBaseKg,
-    //     pConnection,
-    //   ];
+  
       const idPedido = resPedido.insertId;
 
-      // Salva a Entrega
+      
       const sqlEntrega = `
                 INSERT INTO Entregas (ID_pedido, valor_da_distancia, valor_do_peso, acrescimo, desconto, taxa_extra, valor_final, status_entrega)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -70,22 +58,50 @@ const entregaModel = {
 
       const resEntrega=await connection.query(sqlEntrega, valuesEntrega);
 
-      // Confirma as alterações no banco
+      
       await connection.commit();
 
       return { resPedido, resEntrega};
     } catch (error) {
-      // Em caso de erro, desfaz tudo
       if (connection) {
         await connection.rollback();
         console.warn("Transação desfeita (ROLLBACK executado).");
       }
       throw error;
     } finally {
-      // Libera a conexão para o pool
       if (connection) connection.release();
     }
   },
+
+  /**
+     * Atualiza o registro de entrega associado a um pedido, recalculando os valores.
+     * @async
+     * @function alterarEntrega
+     * @param {number} pIdPedido ID do pedido.
+     * @param {number} pValDistancia Novo valor distância.
+     * @param {number} pValPeso Novo valor peso.
+     * @param {number} pAcrescimo Novo acréscimo.
+     * @param {number} pDesconto Novo desconto.
+     * @param {number} pTaxaExtra Nova taxa extra.
+     * @param {number} pValorFinal Novo valor final.
+     * @param {string} pStatus Novo status da entrega.
+     * @param {PoolConnection} pConnection Conexão de transação (obrigatória para esta operação).
+     * @returns {Promise<ResultSetHeader>} Resultado da operação.
+     */
+  alterarEntrega: async (pIdPedido, pValDistancia, pValPeso, pAcrescimo, pDesconto, pTaxaExtra, pValorFinal, pStatus, pConnection) => {
+        
+    const sql = `
+        UPDATE Entregas
+        SET valor_da_distancia=?, valor_do_peso=?, acrescimo=?, desconto=?, taxa_extra=?, 
+            valor_final=?, status_entrega=?
+        WHERE ID_pedido = ?;
+    `;
+    const values = [pValDistancia, pValPeso, pAcrescimo, pDesconto, pTaxaExtra, pValorFinal, pStatus, pIdPedido];
+    
+    
+    const [rows] = await pConnection.query(sql, values);
+    return rows;
+}
 };
 
 module.exports = { entregaModel };

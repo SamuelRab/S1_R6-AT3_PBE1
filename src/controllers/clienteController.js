@@ -21,21 +21,17 @@ const clienteController = {
      */
     buscarTodosclientes: async (req, res) => {
         try {
-            // Chama o modelo para buscar todos os registros
             const resultado = await clienteModel.selecionarTodos(); 
             
-            // Retorna a mensagem 200 se não ouver dados na tabela
             if (resultado.length === 0) { 
                 return res
                     .status(200)
                     .json({ message: "A tabela selecionada não contem dados" });
             }
             
-            // Retorna 200 com os dados recebidos
             res.status(200).json({ message: "Dados recebidos", data: resultado }); 
         } catch (error) {
             console.error(error); 
-            // Retorna 500 para um erro no servidor
             res.status(500).json({
                 message: "Ocorreu um erro no servidor.",
                 errorMessage: error.message,
@@ -54,21 +50,17 @@ const clienteController = {
      */
     buscarclientePorID: async (req, res) => {
         try {
-            // Valida o ID
             const id = Number(req.params.id_cliente); 
             if (!id || !Number.isInteger(id)) { 
-                return res.status(400).json({ message: "Forneça um ID válido" }); // Informa para fornecer um ID válido
+                return res.status(400).json({ message: "Forneça um ID válido" }); 
             }
             
-            // Busca o cliente pelo ID
             const resultado = await clienteModel.selecionarPorId(id);
             
-            // Verifica se o cliente foi encontrado pelo seu ID
             if (resultado.length === 0) {
-                 return res.status(404).json({ message: `Cliente com ID ${id} não localizado.` }); // 404 Not Found
+                 return res.status(404).json({ message: `Cliente com ID ${id} não localizado.` }); 
             }
 
-            // Retorna o cliente encontrado
             res.status(200).json({ message: "Resultado dos dados listados", data: resultado });
         } catch (error) {
             console.error(error); 
@@ -92,21 +84,19 @@ const clienteController = {
         try {
             const { nome_completo, cpf, telefone, email, endereco } = req.body;
             
-            // Validação de dados de entrada
+           
             if (!nome_completo || nome_completo.trim().length < 3 || !cpf || cpf.trim().length !== 11 || !endereco) {
                 return res.status(400).json({ message: "Dados inválidos: Nome, CPF e Endereço são obrigatórios e/ou inválidos" });
             }
             
-            // Verifica se o CPF já existe
+            
             const resultadoId = await clienteModel.selecionarPorCPF(cpf); 
             if (resultadoId.length === 1) {
                 return res.status(409).json({ message: "Esse CPF ja existe. Tente Outro" });
             }
 
-            // Insere o cliente
             const resultado = await clienteModel.inserircliente(nome_completo, cpf, telefone, email, endereco);
 
-            // Confirma a inserção
             if (resultado.affectedRows === 1 && resultado.insertId !== 0) {
                 res.status(201).json({ 
                     message: "Registro incluido com sucesso",
@@ -138,28 +128,26 @@ const clienteController = {
             const id = Number(req.params.id_cliente); 
             const { nome_completo, cpf, telefone, email, endereco } = req.body;
 
-            // Validação de dados
             if (!id || isNaN(id) || !nome_completo || nome_completo.trim().length < 3 || !cpf || cpf.length !== 11 || !endereco) {
                 return res.status(400).json({ message: "Verifique os dados enviados e tente novamente" });
             }
 
-            // Verifica se o registro existe
             const clienteAtual = await clienteModel.selecionarPorId(id);
             if (clienteAtual.length === 0) {
                 return res.status(404).json({ message: `Registro com ID ${id} não localizado.` });
             }
             
-            // Realiza a atualização
+            
             const resultado = await clienteModel.alterarcliente(
                 nome_completo, cpf, telefone, email, endereco, id 
             );
 
-            // Confirma linhas afetadas
+          
             if (resultado.affectedRows === 0) {
                 throw new Error("Ocorreu um erro ao atualizar o Cliente (0 linhas afetadas)");
             }
 
-            // Mostra o registro atualizado com sucesso
+            
             res.status(200).json({ message: "Registro atualizado com sucesso", data: resultado });
         } catch (error) {
             console.error(error);
@@ -183,21 +171,21 @@ const clienteController = {
         try {
             const id = Number(req.params.id_cliente); 
             
-            // Validação do ID
+          
             if (!id || !Number.isInteger(id)) { 
                 return res.status(400).json({ message: "Forneça um ID válido" }); 
             }
 
-            // Verifica se o registro existe
+            
             const ClienteSelecionado = await clienteModel.selecionarPorId(id);
             if (ClienteSelecionado.length === 0) {
                 return res.status(404).json({ message: `Registro com ID ${id} não localizado.` });
             } 
             
-            // Realiza a exclusão
+            
             const resultado = await clienteModel.excluirCliente(id);
             
-            // Confirma a exclusão
+            
             if (resultado.affectedRows === 1) {
                 res.status(200).json({ message: "Cliente excluído com sucesso", data: resultado });
             } else {

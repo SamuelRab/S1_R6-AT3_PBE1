@@ -18,20 +18,35 @@ const pedidoController = {
     try {
       const dados = req.body;
 
-    // Tratar dados
-    if (!data_do_pedido || data_do_pedido.trim().length < 10 || !tipo_de_entrega || tipo_de_entrega.trim().length < 3 || !distancia || distancia <= 0 || !peso_de_carga || peso_de_carga <= 0 || !valor_da_base_por_km || valor_da_base_por_km <= 0 || !valor_da_base_por_kg || valor_da_base_por_kg <= 0) {
-        return res.status(400).json({ message: "Dados inválidos ou faltando campos obrigatórios." });
-    };
+      
+      if (
+        !data_do_pedido ||
+        data_do_pedido.trim().length < 10 ||
+        !tipo_de_entrega ||
+        tipo_de_entrega.trim().length < 3 ||
+        !distancia ||
+        distancia <= 0 ||
+        !peso_de_carga ||
+        peso_de_carga <= 0 ||
+        !valor_da_base_por_km ||
+        valor_da_base_por_km <= 0 ||
+        !valor_da_base_por_kg ||
+        valor_da_base_por_kg <= 0
+      ) {
+        return res.status(400).json({
+          message: "Dados inválidos ou faltando campos obrigatórios.",
+        });
+      }
 
-      // Dá a responsabilidade de salvar para o Model
+     
       const calculo = await functions.calculoEntrega(dados);
-    
+
       const resultado = await entregaModel.salvarPedidoCompleto(dados, calculo);
 
-      // Resposta falando que o pedido e a entrega foram efetuados
+      
       res.status(201).json({
         message: "Pedido e Entrega registrados com sucesso!",
-        dados: resultado
+        dados: resultado,
       });
     } catch (error) {
       console.error("Erro no controller:", error);
@@ -44,7 +59,7 @@ const pedidoController = {
 
   BuscarPedidoPorID: async (req, res) => {
     try {
-      // Validação do ID
+     
       const id = Number(req.params.id_pedido);
 
       if (!id || !Number.isInteger(id)) {
@@ -53,20 +68,20 @@ const pedidoController = {
         });
       }
 
-      // Busca o pedido
+      
       const resultado = await pedidoModel.selecionarPorId(id);
 
-      // Validação se encontrou
+     
       if (!resultado || (Array.isArray(resultado) && resultado.length === 0)) {
         return res.status(404).json({
           message: `Pedido com ID ${id} não localizado.`,
         });
       }
 
-      // Tratamento do dado para retorno
+      
       const pedidoRetorno = Array.isArray(resultado) ? resultado[0] : resultado;
 
-      // Retorno de Sucesso
+     
       res.status(200).json({
         message: "Pedido encontrado com sucesso",
         data: pedidoRetorno,
@@ -81,26 +96,171 @@ const pedidoController = {
 
   buscarTodosPedidos: async (req, res) => {
     try {
-      // Chama o modelo para buscar todos os registros
       const resultado = await pedidoModel.selecionarTodos();
 
-      // Retorna a mensagem 200 se não ouver dados na tabela
+     
       if (resultado.length === 0) {
         return res
           .status(200)
           .json({ message: "A tabela selecionada não contem dados" });
       }
 
-      // Retorna 200 com os dados recebidos
       res.status(200).json({ message: "Dados recebidos", data: resultado });
     } catch (error) {
       console.error(error);
-      // Retorna 500 para um erro no servidor
       res.status(500).json({
         message: "Ocorreu um erro no servidor.",
         errorMessage: error.message,
       });
     }
   },
+
+  excluirPedido: async (req, res) => {
+    try {
+      const id = Number(req.params.id_pedido);
+
+      
+      if (!id || !Number.isInteger(id)) {
+        return res.status(400).json({ message: "Forneça um ID válido" });
+      }
+
+      
+      const PedidoSelecionado = await pedidoModel.selecionarPorId(id);
+      if (PedidoSelecionado.length === 0) {
+        return res
+          .status(404)
+          .json({ message: `Registro com ID ${id} não localizado.` });
+      }
+
+      
+      const resultado = await pedidoModel.excluirPedido(id);
+
+      
+      if (resultado.affectedRows === 1) {
+        res
+          .status(200)
+          .json({ message: "Cliente excluído com sucesso", data: resultado });
+      } else {
+        throw new Error("Não foi possível excluir o Cliente");
+      }
+    } catch (error) {
+      console.error(error);
+      if (error.errno == 1451) {
+        return res.status(400).json({
+          message:
+            "Não foi possível excluir o registro selecionado, existem outros registros vinculados a ele.",
+        });
+      }
+      res.status(500).json({
+        message: "Ocorreu um erro no servidor",
+        errorMessage: error.message,
+      });
+    }
+  },
+
+  /**
+   * Atualiza um Pedido e a Entrega associada em uma transação.
+   * Rota: PUT /pedidos/:id_pedido
+   * @async
+   * @function atualizarPedidoComCalculo
+   * @param {Request} req Requisição contendo o ID do pedido no parâmetro e dados de atualização no corpo.
+   * @param {Response} res Resposta HTTP.
+   * @returns {Promise<void>} Envia resposta JSON de sucesso (200) ou erro (400/404/500).
+   */
+  atualizarPedidoComCalculo: async (req, res) => {
+    const ID_pedido = Number(req.params.id_pedido);
+    const novosDados = req.body;
+
+    try {
+    
+      if (!ID_pedido || !Number.isInteger(ID_pedido)) {
+        return res.status(400).json({ message: "ID do Pedido inválido." });
+      }
+
+      
+      const pedidoAtual = await pedidoModel.selecionarPorId(ID_pedido);
+      if (pedidoAtual.length === 0) {
+        return res
+          .status(404)
+          .json({ message: `Pedido com ID ${ID_pedido} não encontrado.` });
+      }
+      const dadosAtuais = pedidoAtual[0]; 
+
+      
+      const dadosMesclados = {
+        ...dadosAtuais,
+        ...novosDados,
+        ID_pedido: ID_pedido, 
+      };
+
+      const {
+        tipo_de_entrega,
+        distancia,
+        peso_de_carga,
+        valor_da_base_por_km,
+        valor_da_base_por_kg,
+      } = dadosMesclados;
+
+      const valor_da_distancia = distancia * valor_da_base_por_km;
+      const valor_do_peso = peso_de_carga * valor_da_base_por_kg;
+      let valor_base = valor_da_distancia + valor_do_peso;
+
+      let acrescimo = 0;
+      let desconto = 0;
+      let taxa_extra = 0;
+
+      if (tipo_de_entrega.toLowerCase() === "urgente") {
+        acrescimo = valor_base * 0.2;
+      }
+      let valor_final_tempo = valor_base + acrescimo;
+
+      if (valor_final_tempo > 500.0) {
+        desconto = valor_final_tempo * 0.1;
+      }
+      let valor_final = valor_final_tempo - desconto;
+
+      if (peso_de_carga > 50) {
+        taxa_extra = 15.0;
+      }
+
+      valor_final = parseFloat((valor_final + taxa_extra).toFixed(2));
+      const status_entrega = "recalculado"; 
+
+      const dadosEntrega = {
+        ID_pedido,
+        valor_da_distancia,
+        valor_do_peso,
+        acrescimo,
+        desconto,
+        taxa_extra,
+        valor_final,
+        status_entrega,
+       
+      };
+
+      
+      await pedidoModel.alterarPedido(dadosMesclados, dadosEntrega);
+      
+      res.status(200).json({
+        
+        message: `Pedido ${ID_pedido} e Entrega atualizados e recalculados com sucesso.`,
+        valor_final: valor_final,
+        detalhes_calculo: {
+          valor_base: valor_base.toFixed(2),
+          acrescimo: acrescimo.toFixed(2),
+          desconto: desconto.toFixed(2),
+          taxa_extra: taxa_extra.toFixed(2),
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message:
+          "Falha na transação de atualização do Pedido/Entrega. O registro foi desfeito.",
+        errorMessage: error.message,
+      });
+    }
+  },
 };
+
 module.exports = { pedidoController };

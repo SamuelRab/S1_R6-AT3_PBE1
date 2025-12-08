@@ -17,7 +17,7 @@ const clienteModel = {
    * ]
    */
 
-  // Selecionar todos os produtos
+  
   selecionarTodos: async () => {
     const sql = "SELECT * FROM clientes";
     const [rows] = await pool.query(sql);

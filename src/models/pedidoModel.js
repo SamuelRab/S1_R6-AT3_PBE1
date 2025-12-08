@@ -39,12 +39,12 @@ const pedidoModel = {
     pBaseKg,
     pConnection
   ) => {
-    // Query SQL para inserção de um novo pedido
+   
     const sql = `
             INSERT INTO Pedidos (ID_cliente, data_do_pedido, tipo_de_entrega, distancia, peso_de_carga, valor_da_base_por_km, valor_da_base_por_kg) 
             VALUES (?, ?, ?, ?, ?, ?, ?);
         `;
-    // Array de valores
+ 
     const values = [
       pIdCliente,
       pDataPedido,
@@ -55,7 +55,7 @@ const pedidoModel = {
       pBaseKg,
     ];
 
-    // Executa a query usando o pool padrão
+    
     const [rows] = await pConnection.query(sql, values);
     return rows;
   },
@@ -64,11 +64,10 @@ const pedidoModel = {
    * Seleciona um pedido específico de acordo com o `ID_pedido`.
    * @async
    * @function selecionarPorId
-   * @param {number} pIdPedido O ID do pedido a ser buscado.
-   * @returns {Promise<Object>} Uma Promise que resolve para um array contendo o pedido ou vazio.
+   * @param {number} pIdPedido 
+   * @returns {Promise<Object>} 
    */
   selecionarPorId: async (pIdPedido) => {
-    // Query SQL para selecionar pelo ID
     const sql = "SELECT * FROM Pedidos WHERE ID_pedido = ?;";
     const values = [pIdPedido];
     const [rows] = await pool.query(sql, values);
@@ -90,11 +89,86 @@ const pedidoModel = {
    * ]
    */
 
-  // Selecionar todos os produtos
+
   selecionarTodos: async () => {
     const sql = "SELECT * FROM pedidos";
     const [rows] = await pool.query(sql);
     return rows;
+  },
+
+  /**
+   * Exclui um cliente da base de dados.
+   * @async
+   * @function excluirCliente
+   * @param {number} pId ID do cliente a ser excluído.
+   * @returns {Promise<Object>} Objeto contendo linhas afetadas.
+   */
+
+  excluirPedido: async (pId) => {
+    const sql = "DELETE FROM pedidos WHERE id_pedido=?;";
+    const values = [pId];
+    const [rows] = await pool.query(sql, values);
+    return rows;
+  },
+
+  /**
+   * Atualiza os dados de um pedido existente.
+   * @async
+   * @param {Object} dados Objeto contendo todos os campos do pedido, incluindo ID_pedido.
+   * @param {PoolConnection} pConnection Conexão de transação (obrigatória para esta operação).
+   * @returns {Promise<ResultSetHeader>} Resultado da operação.
+   */
+  alterarPedido: async (dados, dadosEntrega) => {
+    const connection = await pool.getConnection();
+
+    try {
+      await connection.beginTransaction();
+
+      const sql = `
+            UPDATE Pedidos 
+            SET ID_cliente=?, data_do_pedido=?, tipo_de_entrega=?, distancia=?, peso_de_carga=?, 
+                valor_da_base_por_km=?, valor_da_base_por_kg=?
+            WHERE ID_pedido = ?;
+        `;
+      const values = [
+        dados.ID_cliente,
+        dados.data_do_pedido,
+        dados.tipo_de_entrega,
+        dados.distancia,
+        dados.peso_de_carga,
+        dados.valor_da_base_por_km,
+        dados.valor_da_base_por_kg,
+        dados.ID_pedido,
+      ];
+      const [rows] = await connection.query(sql, values);
+
+      const sqlEntrega = `
+        UPDATE Entregas
+        SET valor_da_distancia=?, valor_do_peso=?, acrescimo=?, desconto=?, taxa_extra=?, 
+            valor_final=?, status_entrega=?
+        WHERE ID_pedido = ?;
+    `;
+      const valuesEntrega = [
+          dadosEntrega.valor_da_distancia,
+          dadosEntrega.valor_do_peso,
+          dadosEntrega.acrescimo,
+          dadosEntrega.desconto,
+          dadosEntrega.taxa_extra,
+          dadosEntrega.valor_final,
+          dadosEntrega.status_entrega,
+          dadosEntrega.ID_pedido,
+      ];
+
+      const [rowsEntrega] = await connection.query(sqlEntrega, valuesEntrega);
+      connection.commit();
+      return { rows, rowsEntrega };
+    } catch (error) {
+
+      await connection.rollback();
+      console.warn("Transação de atualização desfeita (ROLLBACK executado).");
+
+      throw error;
+    } 
   },
 };
 
