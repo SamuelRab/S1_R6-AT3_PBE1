@@ -1,5 +1,4 @@
 
-
 const functions = {
   calculoEntrega: async (dados) => {
    

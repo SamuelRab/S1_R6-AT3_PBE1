@@ -57,6 +57,17 @@ const pedidoController = {
     }
   },
 
+  
+    /**
+     * Retorna um cliente específico pelo seu ID.
+     * Rota: GET /clientes/:id_pedido
+     * @async
+     * @function buscarPedidoPorID
+     * @param {Request} req Requisição contendo nos parâmetros.
+     * @param {Response} res Resposta HTTP.
+     * @returns {Promise<Array<<Object>} Envia uma resposta JSON com o cliente ou erro
+     */
+
   BuscarPedidoPorID: async (req, res) => {
     try {
      
@@ -94,6 +105,16 @@ const pedidoController = {
     }
   },
 
+  /**
+     * Retorna todos os pedidos cadastrados.
+     * Rota: GET /pedidos
+     * @async
+     * @function buscarTodosPedidos
+     * @param {Request} req Objeto da requisição HTTP.
+     * @param {Response} res Objeto da resposta HTTP.
+     * @returns {Promise<Array<<Object>} Envia uma resposta JSON com os dados dos clientes ou uma mensagem de erro/tabela vazia.
+     */
+
   buscarTodosPedidos: async (req, res) => {
     try {
       const resultado = await pedidoModel.selecionarTodos();
@@ -114,6 +135,16 @@ const pedidoController = {
       });
     }
   },
+
+  /**
+     * Exclui um pedido
+     * Rota: DELETE /pedidos/:id_pedido
+     * @async
+     * @function excluirPedido
+     * @param {Request} req Requisição contendo nos parâmetros.
+     * @param {Response} res Resposta HTTP.
+     * @returns {Promise<void>} Envia resposta JSON de sucesso ou erro.
+     */
 
   excluirPedido: async (req, res) => {
     try {
@@ -237,8 +268,7 @@ const pedidoController = {
         status_entrega,
        
       };
-
-      
+ 
       await pedidoModel.alterarPedido(dadosMesclados, dadosEntrega);
       
       res.status(200).json({
