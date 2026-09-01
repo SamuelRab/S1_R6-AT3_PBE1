@@ -52,24 +52,6 @@ app.js                 # Ponto de entrada do servidor Express
 
 Node.js · Express · MySQL (mysql2, pool + Promises) · Insomnia (testes)
 
-## 🚀 Como executar
-
-```bash
-git clone <url-do-repositorio>
-cd rapido-seguro-logistica
-npm install
-
-# Configure o .env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=sua_senha
-DB_NAME=rapido_seguro_logistica
-DB_PORT=3306
-
-# Crie o banco com o script SQL em /docs, depois:
-node app.js
-```
-
 ## 🔌 Endpoints
 
 ### Clientes — `/clientes`
